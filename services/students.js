@@ -21,7 +21,7 @@ async function create(data) {
         `INSERT INTO students
         (fullname, entrance_year, studyplan_id, previous_studyplans)
         VALUES 
-        (${data.fullname}, ${data.entrance_year}, ${data.studyplan_id}, ${data.previous_studyplans})`
+        ('${data.fullname}', ${data.entrance_year}, ${data.studyplan_id||null}, ${data.previous_studyplans||null})`
     );
 
     let message = 'Error in creating student.';

@@ -7,7 +7,7 @@ router.get('/', async function(req, res, next) {
   try {
     res.json(await students.getList(req.query.page));
   } catch (err) {
-    console.log('Error while getting student list', err.message);
+    console.error('Error while getting student list', err.message);
     next(err);
   }
 });
