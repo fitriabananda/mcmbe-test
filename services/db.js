@@ -1,7 +1,7 @@
 const mysql = require('mysql2/promise');
 const { Sequelize } = require('@sequelize/core');
 const config = require('../config');
-const {host, user, password, database, port} = config.db;
+const { host, user, password, database, port } = config.db;
 const sequelize = new Sequelize(database, user, password, {
     host,
     port,
@@ -25,6 +25,7 @@ async function query(sql, params) {
 }
 
 module.exports = {
+    sequelize,
     connect,
     query
 }

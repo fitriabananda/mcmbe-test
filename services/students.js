@@ -1,15 +1,14 @@
 const db = require('./db');
 const helper = require('../helper');
 const config = require('../config');
+const student = require('../models/student');
 
 async function getList(page = 1) {
     const offset = helper.getOffset(page, config.listPerPage);
-    const rows = await db.query(
-        `SELECT * FROM students LIMIT ${offset},${config.listPerPage}`
-    );
+    const rows = await student.findAll({offset, limit: config.listPerPage });
+    
     const data = helper.emptyOrRows(rows);
     const meta = {page};
-
     return {
         data,
         meta
@@ -48,6 +47,7 @@ async function update(id, data) {
 
 module.exports = {
     getList,
+    getSQList,
     create,
     update
 }
