@@ -9,6 +9,9 @@ var studentsRouter = require('./routes/students');
 var studyPlanRouter = require('./routes/studyPlan');
 var coursesRouter = require('./routes/courses');
 
+var { connect } = require('./services/db');
+connect();
+
 var app = express();
 
 // view engine setup

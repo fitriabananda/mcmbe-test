@@ -15,6 +15,12 @@ async function getList(page = 1) {
     }
 }
 
+async function getStudentById(id) {
+    const result = await student.findByPk(id);
+    const data = helper.emptyOrRows(result);
+    return {data};
+}
+
 async function create(data) {
     const result = await student.create(data);
     let message = 'Error in creating student.';
@@ -39,6 +45,7 @@ async function update(id, data) {
 
 module.exports = {
     getList,
+    getStudentById,
     create,
     update
 }
