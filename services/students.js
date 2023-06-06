@@ -43,9 +43,37 @@ async function update(id, data) {
     return {message};
 } 
 
+async function removeById(id) {
+    const result = await student.destroy({
+        where: {
+            id
+        }
+    });
+    let message = 'Error in deleting student.';
+    if (result) {
+        message = 'Student deleted successfully.';
+    }
+    return {message};
+}
+
+async function removeByAttributes(attr) {
+    const result = await student.destroy({
+        where: {
+            ...attr
+        }
+    });
+    let message = 'Error in deleting students.';
+    if (result) {
+        message = 'Students with defined attribute(s) deleted successfully.';
+    }
+    return {message};
+}
+
 module.exports = {
     getList,
     getStudentById,
     create,
-    update
+    update,
+    removeById,
+    removeByAttributes
 }
