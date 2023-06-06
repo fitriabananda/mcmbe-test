@@ -15,6 +15,13 @@ async function connect() {
     } catch (err) {
         console.error('Unable to connect to database.', err);
     }
+    console.log('Synchronizing database..');
+    try {
+        await sequelize.sync();
+        console.log('Database synchronized.');
+    } catch (err) {
+        console.error('Unable to synchronize to database.', err);
+    }
 }
 
 module.exports = {

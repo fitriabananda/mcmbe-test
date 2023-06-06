@@ -1,14 +1,8 @@
 const { DataTypes } = require('@sequelize/core');
 const { sequelize } = require('../services/db');
-const studyplan = require('./studyplan');
+// const studyplan = require('./studyplan');
 
 const student = sequelize.define('Student', {
-    // id: {
-    //     type: DataTypes.INTEGER,
-    //     autoIncrement: true,
-    //     primaryKey: true,
-    //     allowNull: false
-    // },
     fullname: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -20,10 +14,10 @@ const student = sequelize.define('Student', {
     },
     studyplan_id: {
         type: DataTypes.INTEGER,
-        references: {
-            model: studyplan,
-            key: 'id'
-        }
+        // references: {
+        //     model: studyplan,
+        //     key: 'id'
+        // }
     },
     previous_studyplans: {
         type: DataTypes.JSON,
@@ -34,5 +28,7 @@ const student = sequelize.define('Student', {
     createdAt: 'created_at',
     updatedAt: 'updated_at'
 })
+
+// student.hasMany(studyplan);
 
 module.exports = student;

@@ -1,10 +1,10 @@
 const helper = require('../helper');
 const config = require('../config');
-const course = require('../models/course');
+const studyPlan = require('../models/studyplan');
 
 async function getList(page = 1) {
     const offset = helper.getOffset(page, config.listPerPage);
-    const rows = await course.findAll({offset, limit: config.listPerPage });
+    const rows = await studyPlan.findAll({offset, limit: config.listPerPage });
     
     const data = helper.emptyOrRows(rows);
     const meta = {page};
@@ -14,63 +14,63 @@ async function getList(page = 1) {
     }
 }
 
-async function getCourseById(id) {
-    const result = await course.findByPk(id);
+async function getStudyPlanById(id) {
+    const result = await studyPlan.findByPk(id);
     const data = helper.emptyOrRows(result);
     return {data};
 }
 
 async function create(data) {
-    const result = await course.create(data);
-    let message = 'Error in creating course.';
+    const result = await studyPlan.create(data);
+    let message = 'Error in creating study plan.';
     if (result.id) {
-        message = 'Course created successfully.';
+        message = 'Study plan created successfully.';
     }
     return {message};
 }
 
 async function update(id, data) {
-    const result = await course.update(data, {
+    const result = await studyPlan.update(data, {
         where: {
             id
         }
     });
-    let message = 'Error in updating course.';
+    let message = 'Error in updating study plan.';
     if (result && result.length > 0) {
-        message = 'Course  updated successfully.';
+        message = 'Study plan updated successfully.';
     }
     return {message};
 } 
 
 async function removeById(id) {
-    const result = await course.destroy({
+    const result = await studyPlan.destroy({
         where: {
             id
         }
     });
-    let message = 'Error in deleting course.';
+    let message = 'Error in deleting study plan.';
     if (result) {
-        message = 'Course deleted successfully.';
+        message = 'Study plan deleted successfully.';
     }
     return {message};
 }
 
 async function removeByAttributes(attr) {
-    const result = await course.destroy({
+    const result = await studyPlan.destroy({
         where: {
             ...attr
         }
     });
-    let message = 'Error in deleting courses.';
+    let message = 'Error in deleting study plans.';
     if (result) {
-        message = 'Courses with defined attribute(s) deleted successfully.';
+        message = 'Study plans with defined attribute(s) deleted successfully.';
     }
     return {message};
 }
 
 module.exports = {
     getList,
-    getCourseById,
+    getStudyPlanById,
     create,
     update,
     removeById,

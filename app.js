@@ -6,7 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var studentsRouter = require('./routes/students');
-var studyPlanRouter = require('./routes/studyPlan');
+var studyPlanRouter = require('./routes/studyPlans');
 var coursesRouter = require('./routes/courses');
 
 var { connect } = require('./services/db');
