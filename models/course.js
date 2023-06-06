@@ -1,7 +1,5 @@
 const { DataTypes } = require('@sequelize/core');
 const { sequelize } = require('../services/db');
-// const student = require('./student');
-// const studyplan = require('./studyplan');
 
 const course = sequelize.define('Course', {
     name: {
@@ -16,6 +14,22 @@ const course = sequelize.define('Course', {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0
+    },
+    active_students: {
+        type: DataTypes.TEXT('long'),
+        get: function() {
+            return JSON.parse(this.getDataValue('active_students'));
+        },
+        set: function(value) {
+            this.setDataValue('active_students', JSON.stringify(value));
+        },
+        validate: {
+            isLength(value) {
+                if (JSON.parse(value).length > 4) {
+                    throw new Error('A course can only have 4 active students at a time.');
+                }
+            }
+        }
     }
 }, {
     tableName: 'courses',
@@ -23,8 +37,5 @@ const course = sequelize.define('Course', {
     createdAt: 'created_at',
     updatedAt: 'updated_at'
 });
-
-// course.belongsToMany(student);
-// course.belongsToMany(studyplan);
 
 module.exports = course;

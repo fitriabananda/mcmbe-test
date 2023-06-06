@@ -1,6 +1,5 @@
 const { DataTypes } = require('@sequelize/core');
 const { sequelize } = require('../services/db');
-// const studyplan = require('./studyplan');
 
 const student = sequelize.define('Student', {
     fullname: {
@@ -12,15 +11,19 @@ const student = sequelize.define('Student', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    studyplan_id: {
+    active_studyplan_id: {
         type: DataTypes.INTEGER,
-        // references: {
-        //     model: studyplan,
-        //     key: 'id'
-        // }
+        unique: true
     },
     previous_studyplans: {
-        type: DataTypes.JSON,
+        type: DataTypes.TEXT('long'),
+        unique: true,
+        get: function() {
+            return JSON.parse(this.getDataValue('previous_studyplans'));
+        },
+        set: function(value) {
+            this.setDataValue('previous_studyplans', JSON.stringify(value));
+        },
     } 
 }, {
     tableName: 'students',
@@ -28,7 +31,5 @@ const student = sequelize.define('Student', {
     createdAt: 'created_at',
     updatedAt: 'updated_at'
 })
-
-// student.hasMany(studyplan);
 
 module.exports = student;

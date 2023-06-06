@@ -1,6 +1,6 @@
 const helper = require('../helper');
 const config = require('../config');
-const studyPlan = require('../models/studyplan');
+const studyPlan = require('../models/studyPlan');
 
 async function getList(page = 1) {
     const offset = helper.getOffset(page, config.listPerPage);

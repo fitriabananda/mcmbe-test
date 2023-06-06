@@ -14,7 +14,8 @@ const studyplan = sequelize.define('StudyPlan', {
     },
     year: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 2023
     },
     period: {
         type: DataTypes.INTEGER,
@@ -22,7 +23,21 @@ const studyplan = sequelize.define('StudyPlan', {
         defaultValue: 0
     },
     courses: {
-        type: DataTypes.JSON
+        type: DataTypes.TEXT('long'),
+        get: function() {
+            return JSON.parse(this.getDataValue('courses'));
+        },
+        set: function(value) {
+            this.setDataValue('courses', JSON.stringify(value));
+        },
+        validate: {
+            isLength(value) {
+                console.log('courses value ', JSON.parse(value).length);
+                if (JSON.parse(value).length > 3) {
+                    throw new Error('A student can only take 3 courses at a time.');
+                }
+            }
+        }
     }
 }, {
     tableName: 'study_plans',
