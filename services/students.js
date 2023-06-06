@@ -25,19 +25,17 @@ async function create(data) {
 }
 
 async function update(id, data) {
-    const result = await db.query(
-        `UPDATE students
-        SET fullname=${data.fullname}, entrance_year=${data.entrance_year}, 
-        studyplan_id=${data.studyplan_id}, previous_studyplans=${previous_studyplans}
-        WHERE id=${id}`
-    );
-
-    let message = 'Error in updating student';
-    if (result.affectedRows) {
+    const result = await student.update(data, {
+        where: {
+            id
+        }
+    });
+    let message = 'Error in updating student.';
+    if (result && result.length > 0) {
         message = 'Student updated successfully.';
     }
     return {message};
-}
+} 
 
 module.exports = {
     getList,
