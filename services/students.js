@@ -16,15 +16,9 @@ async function getList(page = 1) {
 }
 
 async function create(data) {
-    const result = await db.query(
-        `INSERT INTO students
-        (fullname, entrance_year, studyplan_id, previous_studyplans)
-        VALUES 
-        ('${data.fullname}', ${data.entrance_year}, ${data.studyplan_id||null}, ${data.previous_studyplans||null})`
-    );
-
+    const result = await student.create(data);
     let message = 'Error in creating student.';
-    if (result.affectedRows) {
+    if (result.id) {
         message = 'Student created successfully.';
     }
     return {message};
@@ -47,7 +41,6 @@ async function update(id, data) {
 
 module.exports = {
     getList,
-    getSQList,
     create,
     update
 }
