@@ -37,7 +37,6 @@ const studyPlan = sequelize.define('StudyPlan', {
         },
         validate: {
             isLength(value) {
-                console.log('courses value ', JSON.parse(value).length);
                 if (JSON.parse(value).length > 3) {
                     throw new Error('A student can only take 3 courses at a time.');
                 }

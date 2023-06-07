@@ -42,7 +42,6 @@ async function modifyCourses(id, data) {
     if (data.courses) {
         let i = 0;
         for await (const element of data.courses) {
-            console.log('every course element', element, data);
             const result = await generateCourse({
                 id: element.id,
                 student_id: data.is_active && data.student_id,

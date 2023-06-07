@@ -59,7 +59,6 @@ async function modifyStudyPlan(student_id, data) {
 }
 
 async function generateStudyPlan(data) {
-    console.log('generating study plan', data);
     const study_plan = await studyPlans.getStudyPlanById(data.id);
         if (study_plan.data.length == 0) {
             try {
