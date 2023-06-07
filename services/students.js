@@ -37,9 +37,10 @@ async function modifyStudyPlan(student_id, data) {
         for await (const element of data.previous_studyplans) {
             const result = await generateStudyPlan({
                 id: element.id,
-                student_id: student_id,
+                student_id,
                 year: element.year,
-                period: element.period
+                period: element.period,
+                is_active: false
             });
             if (!result) {
                 data.previous_studyplans.splice(i, 1);
@@ -58,6 +59,7 @@ async function modifyStudyPlan(student_id, data) {
 }
 
 async function generateStudyPlan(data) {
+    console.log('generating study plan', data);
     const study_plan = await studyPlans.getStudyPlanById(data.id);
         if (study_plan.data.length == 0) {
             try {

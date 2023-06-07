@@ -43,6 +43,11 @@ const studyplan = sequelize.define('StudyPlan', {
                 }
             }
         }
+    },
+    is_active: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     }
 }, {
     tableName: 'studyplans',
