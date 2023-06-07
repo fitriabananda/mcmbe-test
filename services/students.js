@@ -21,34 +21,100 @@ async function getStudentById(id) {
     return {data};
 }
 
-async function modify(result) {
-    console.log('modify', typeof result);
-    if (result.active_studyplan_id) {
-        console.log('study plan defined');
-        const study_plan = await studyPlans.getStudyPlanById(result.active_studyplan_id);
-        console.log('study plan exist ', study_plan);
-        if (study_plan.data.length == 0) {
-            console.log('study plan not found');
-            await studyPlans.create({
-                id: result.active_studyplan_id,
-                student_id: result.id
-            });
-            console.log('study plan created');
+async function modifyStudyPlan(student_id, data) {
+    let res = {};
+    if (data.active_studyplan_id) {
+        const result = await generateStudyPlan({
+            id: data.active_studyplan_id,
+            student_id: student_id
+        })
+        if (!result) {
+            data.active_studyplan_id = null;
         }
     }
+    if (data.previous_studyplans) {
+        let i = 0;
+        for await (const element of data.previous_studyplans) {
+            const result = await generateStudyPlan({
+                id: element.id,
+                student_id: student_id,
+                year: element.year,
+                period: element.period
+            });
+            if (!result) {
+                data.previous_studyplans.splice(i, 1);
+            }    
+            i++;
+        }
+    }
+    if (data.active_studyplan_id || data.previous_studyplans.length > 0) {
+        try {
+            res = await modify(student_id, data);
+        } catch(err) {
+            console.error(err.message);
+        }
+    }
+    return res;
+}
+
+async function generateStudyPlan(data) {
+    const study_plan = await studyPlans.getStudyPlanById(data.id);
+        if (study_plan.data.length == 0) {
+            try {
+                await studyPlans.create(data);
+            } catch (err) {
+                console.error(err.message);
+            }
+        } else if (study_plan.data.student_id == data.student_id) {
+            try {
+                await studyPlans.update(data.id, data);
+            } catch (err) {
+                console.error(err.message);
+            }
+        } else {
+            console.error('Study plan is for another student.');
+            return false;
+        }
+        return true;
 }
 
 async function create(data) {
-    const result = await student.create(data);
+    const default_data = {
+        fullname: data.fullname,
+        entrance_year: data.entrance_year
+    }
+    const result = await student.create(default_data);
     let message = 'Error in creating student.';
     if (result.id) {
         message = 'Student created successfully.';
-        await modify(result);
+        await modifyStudyPlan(result.id, data);
     }
     return {message};
 }
 
 async function update(id, data) {
+    let modify_data = {}
+    let result = {};
+    if (data.active_studyplan_id) {
+        modify_data.active_studyplan_id = data.active_studyplan_id;
+        delete data.active_studyplan_id;
+    }
+    if (data.previous_studyplans) {
+        modify_data.previous_studyplans = data.previous_studyplans;
+        delete data.previous_studyplans;
+    }
+    try {
+        result = await modify(id, data);
+    } catch (err) {
+        console.error(err.message);
+    }
+    if (Object.keys(modify_data).length > 0) {
+        result = await modifyStudyPlan(id, modify_data);
+    }
+    return result;
+}
+
+async function modify(id, data) {
     const result = await student.update(data, {
         where: {
             id

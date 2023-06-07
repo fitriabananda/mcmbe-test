@@ -1,5 +1,6 @@
 const { DataTypes } = require('@sequelize/core');
 const { sequelize } = require('../services/db');
+const { currentYear, currentMonth } = require('../helper');
 // const student = require('./student');
 // const course = require('./course');
 
@@ -15,12 +16,16 @@ const studyplan = sequelize.define('StudyPlan', {
     year: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 2023
+        defaultValue: function () {
+            return currentYear();
+        }
     },
     period: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 0
+        defaultValue: function() {
+            return currentMonth() < 6 ? 2 : 1;
+        }
     },
     courses: {
         type: DataTypes.TEXT('long'),
@@ -40,7 +45,7 @@ const studyplan = sequelize.define('StudyPlan', {
         }
     }
 }, {
-    tableName: 'study_plans',
+    tableName: 'studyplans',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
