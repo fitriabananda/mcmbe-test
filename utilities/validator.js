@@ -11,7 +11,7 @@ function studentValidator(data) {
 
 function studyPlanValidator(data) {
     const rules = {
-
+        
     }
 
     let validator = new Validator(data, rules, {

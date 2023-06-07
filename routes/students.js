@@ -25,7 +25,9 @@ router.get('/:id', async function(req, res, next) {
 /* POST student */
 router.post('/', async function(req, res, next) {
   try {
-    res.json(await students.create(req.body));
+    const result = await students.create(req.body)
+    res.statusCode = result.status;
+    res.json(result);
   } catch (err) {
     console.error('Error while creating new student', err.message);
     next(err);

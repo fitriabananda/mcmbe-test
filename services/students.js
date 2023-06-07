@@ -82,10 +82,11 @@ async function generateStudyPlan(data) {
 
 async function create(data) {
     let message = 'Error in creating student.';
+    let status = 500;
     let validation = studentValidator(data);
     if (validation.fails()) {
-        // message = validation.errors.all();
-        throw new Error(JSON.stringify(validation.errors.all()));
+        message = validation.errors.all();
+        status = 422;
     } else {
         const default_data = {
             fullname: data.fullname,
@@ -94,10 +95,11 @@ async function create(data) {
         const result = await student.create(default_data);
         if (result.id) {
             message = 'Student created successfully.';
+            status = 200;
             await modifyStudyPlan(result.id, data);
         }
     }
-    return {message};
+    return {message, status};
 }
 
 async function update(id, data) {
