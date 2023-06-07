@@ -5,7 +5,6 @@ const student = sequelize.define('Student', {
     fullname: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: 'compositeIndex',
         validate: {
             isAlpha: true
         }

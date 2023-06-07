@@ -11,30 +11,26 @@ function studentValidator(data) {
 
 function studyPlanValidator(data) {
     const rules = {
-        
+        student_id: 'required',
+        courses: 'max:3'
     }
-
     let validator = new Validator(data, rules, {
-
-    })
-
-    validator.setAttributeNames({
-
-    })
+        max: {
+            JSON: 'The :attribute can only have :max at a time.'
+        }
+    });
     return validator;
 }
 
 function courseValidator(data) {
     const rules = {
-
+        code: 'required|code_available',
+        active_students: 'max:4'
     }
-
     let validator = new Validator(data, rules, {
-
-    })
-
-    validator.setAttributeNames({
-
+        max: {
+            JSON: 'The :attribute can only have :max at a time.'
+        }
     })
     return validator;
 }
