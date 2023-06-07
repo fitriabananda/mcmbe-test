@@ -8,7 +8,10 @@ const course = sequelize.define('Course', {
     code: {
         type: DataTypes.STRING(10),
         allowNull: false,
-        unique: 'compositeIndex'
+        unique: 'compositeIndex',
+        validate: {
+            isAlphanumeric: true
+        }
     },
     period_open: {
         type: DataTypes.INTEGER,

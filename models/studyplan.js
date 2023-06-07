@@ -4,7 +4,7 @@ const { currentYear, currentMonth } = require('../helper');
 // const student = require('./student');
 // const course = require('./course');
 
-const studyplan = sequelize.define('StudyPlan', {
+const studyPlan = sequelize.define('StudyPlan', {
     student_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -59,4 +59,4 @@ const studyplan = sequelize.define('StudyPlan', {
 // studyplan.belongsTo(student);
 // studyplan.hasMany(course);
 
-module.exports = studyplan;
+module.exports = studyPlan;
