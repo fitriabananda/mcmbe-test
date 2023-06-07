@@ -1,5 +1,5 @@
-const helper = require('../helper');
-const config = require('../config');
+const helper = require('../utilities/helper');
+const config = require('../utilities/config');
 const course = require('../models/course');
 
 async function getList(page = 1) {

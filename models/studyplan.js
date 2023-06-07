@@ -1,6 +1,6 @@
 const { DataTypes } = require('@sequelize/core');
 const { sequelize } = require('../services/db');
-const { currentYear, currentMonth } = require('../helper');
+const { currentYear, currentMonth } = require('../utilities/helper');
 // const student = require('./student');
 // const course = require('./course');
 

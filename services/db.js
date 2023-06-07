@@ -1,5 +1,5 @@
 const { Sequelize } = require('@sequelize/core');
-const config = require('../config');
+const config = require('../utilities/config');
 const { host, user, password, database, port } = config.db;
 const sequelize = new Sequelize(database, user, password, {
     host,

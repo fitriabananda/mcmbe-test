@@ -1,7 +1,8 @@
-const helper = require('../helper');
-const config = require('../config');
+const helper = require('../utilities/helper');
+const config = require('../utilities/config');
 const student = require('../models/student');
 const studyPlans = require('./studyPlans');
+const { studentValidator } = require('../utilities/validator');
 
 async function getList(page = 1) {
     const offset = helper.getOffset(page, config.listPerPage);
@@ -80,15 +81,21 @@ async function generateStudyPlan(data) {
 }
 
 async function create(data) {
-    const default_data = {
-        fullname: data.fullname,
-        entrance_year: data.entrance_year
-    }
-    const result = await student.create(default_data);
     let message = 'Error in creating student.';
-    if (result.id) {
-        message = 'Student created successfully.';
-        await modifyStudyPlan(result.id, data);
+    let validation = studentValidator(data);
+    if (validation.fails()) {
+        // message = validation.errors.all();
+        throw new Error(JSON.stringify(validation.errors.all()));
+    } else {
+        const default_data = {
+            fullname: data.fullname,
+            entrance_year: data.entrance_year
+        }
+        const result = await student.create(default_data);
+        if (result.id) {
+            message = 'Student created successfully.';
+            await modifyStudyPlan(result.id, data);
+        }
     }
     return {message};
 }

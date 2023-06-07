@@ -17,6 +17,7 @@
     "morgan": "~1.9.1",
     "mysql2": "^3.3.3",
     "sequelize": "^6.32.0",
-    "validator": "^13.9.0"
+    "validator": "^13.9.0",
+    "validatorjs": "^3.22.1"
   }
 }
