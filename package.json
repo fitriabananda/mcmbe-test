@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "@sequelize/core": "^7.0.0-alpha.26",
-    "@sequelize/validator.js": "^7.0.0-alpha.26",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^16.1.4",
@@ -16,6 +15,7 @@
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
     "mysql2": "^3.3.3",
-    "sequelize": "^6.32.0"
+    "sequelize": "^6.32.0",
+    "validator": "^13.9.0"
   }
 }

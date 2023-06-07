@@ -8,8 +8,18 @@ function emptyOrRows(rows) {
     }
     return rows;
 }
+
+function currentYear() {
+    return new Date().getFullYear();
+}
+
+function currentMonth() {
+    return new Date().getMonth();
+}
   
 module.exports = {
     getOffset,
-    emptyOrRows
+    emptyOrRows,
+    currentYear,
+    currentMonth
 }
