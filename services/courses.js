@@ -20,13 +20,21 @@ async function getCourseById(id) {
     return {data};
 }
 
+async function getCourseByAttr(attr) {
+    const result = await course.findOne({
+        where: attr
+    });
+    const data = result ? result.dataValues : [];
+    return {data};
+}
+
 async function create(data) {
     const result = await course.create(data);
     let message = 'Error in creating course.';
     if (result.id) {
         message = 'Course created successfully.';
     }
-    return {message};
+    return {message, id: result.id};
 }
 
 async function update(id, data) {
@@ -71,6 +79,7 @@ async function removeByAttributes(attr) {
 module.exports = {
     getList,
     getCourseById,
+    getCourseByAttr,
     create,
     update,
     removeById,

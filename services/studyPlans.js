@@ -66,20 +66,38 @@ async function modifyCourses(id, data) {
 }
 
 async function generateCourse(data) {
-    const course = await courses.getCourseById(data.id);
+    let course = await courses.getCourseById(data.id);
     if (course.data.length == 0) {
-        try {
-            await courses.create({
-                ...data,
-                active_students: data.student_id ? [data.student_id] : []
-            });
-        } catch (err) {
-            console.error(err.message);
+        course = await courses.getCourseByAttr({code: data.code});
+        if (course.data.length == 0) {
+            try {
+                await courses.create({
+                    ...data,
+                    active_students: data.student_id ? [data.student_id] : []
+                });
+            } catch (err) {
+                console.error(err.message);
+            }
+        } else {
+            let active_students = JSON.parse(course.data.active_students);
+            if (data.student_id) {
+                active_students.indexOf(data.student_id) == -1 && active_students.push(data.student_id);
+            }
+            delete data.student_id;
+            try {
+                await courses.update(course.data.id, {
+                    ...data,
+                    active_students
+                })
+            } catch (err) {
+                console.error(err.message);
+                return false;
+            }    
         }
     } else {
         let active_students = course.data.active_students;
         if (data.student_id) {
-            active_students.push(data.student_id);
+            active_students.indexOf(data.student_id) == -1 && active_students.push(data.student_id);
         }
         delete data.student_id;
         try {
@@ -106,6 +124,7 @@ async function update(id, data) {
         result = await modify(id, data);
         modify_data.is_active = result.data.is_active;
         modify_data.student_id = result.data.student_id;
+        modify_data.period = result.data.period;
     } catch (err) {
         console.error(err.message);
     }
@@ -125,13 +144,8 @@ async function modify(id, data) {
     let res = {};
     if (result && result.length > 0) {
         message = 'Study plan updated successfully.';
-        const updated_studyplan = await studyPlan.findOne({
-            where: {
-                id
-            }
-        });
-        res = updated_studyplan;
-        return {message, data: res.dataValues};
+        const updated_studyplan = await getStudyPlanById(id);
+        return {message, data: updated_studyplan.data};
     }
     return {message};
 } 
