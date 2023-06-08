@@ -1,7 +1,7 @@
 const helper = require('../utilities/helper');
 const config = require('../utilities/config');
 const course = require('../models/course');
-const { courseValidator } = require('../utilities/validator');
+const { courseValidator, courseStudentValidator } = require('../utilities/validator');
 
 async function getList(page = 1) {
     const offset = helper.getOffset(page, config.listPerPage);
@@ -40,22 +40,31 @@ async function create(data) {
         const result = await course.create(data);
         if (result.id) {
             message = 'Course created successfully.';
+            status = 200;
         }
     }
     return {message, status, id: result.id};
 }
 
 async function update(id, data) {
-    const result = await course.update(data, {
-        where: {
-            id
+    let validation = courseStudentValidator(data);
+    let result = {status:500};
+    if (validation.fails()) {
+        result.message = validation.errors.all();
+        result.status = 422;
+    } else {
+        result = await course.update(data, {
+            where: {
+                id
+            }
+        });
+        result.message = 'Error in updating course.';
+        if (result && result.length > 0) {
+            result.status = 200;
+            result.message = 'Course  updated successfully.';
         }
-    });
-    let message = 'Error in updating course.';
-    if (result && result.length > 0) {
-        message = 'Course  updated successfully.';
     }
-    return {message};
+    return result;
 } 
 
 async function removeById(id) {

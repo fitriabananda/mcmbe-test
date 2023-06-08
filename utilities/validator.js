@@ -2,6 +2,7 @@ const Validator = require('validatorjs');
 const course = require('../models/course');
 
 Validator.registerAsync('code_available', async function(code, attribute, req, passes) {
+    console.log('async validation', code)
     const result = await course.findOne({
         where: {
             code
@@ -44,7 +45,7 @@ function studyPlanCoursesValidator(data) {
 
 function courseValidator(data) {
     const rules = {
-        code: 'required|code_available',
+        code: 'required',
         active_students: 'max:4'
     }
     let validator = new Validator(data, rules, {
@@ -52,7 +53,7 @@ function courseValidator(data) {
         //     string: 'Code is already reserved for another course'
         // },
         max: {
-            array: 'A course can only have up to :max :attribute at a time.'
+            string: 'A course can only have up to :max :attribute at a time.'
         }
     })
     validator.setAttributeNames({active_students: 'active students'});

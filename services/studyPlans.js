@@ -47,25 +47,28 @@ async function create(data) {
 }
 
 async function modifyCourses(id, data) {
-    let res = {};
+    let res = {status: 500};
     if (data.courses) {
         let i = 0;
         for await (const element of data.courses) {
-            const result = await generateCourse({
+            res = await generateCourse({
                 id: element.id,
                 student_id: data.is_active && data.student_id,
                 code: element.code,
                 period_open: data.period,
                 name: element.name
             });
-            if (!result) {
+            if (res.status !== 200) {                
                 data.courses.splice(i, 1);
             }
             i++;
         }
         if (data.courses.length > 0) {
             try {
-                res = await modify(id, data);
+                const temp = await modify(id, data);
+                if (res.status == 200) {
+                    return temp;
+                }
             } catch (err) {
                 console.error(err.message);
             }
@@ -75,12 +78,13 @@ async function modifyCourses(id, data) {
 }
 
 async function generateCourse(data) {
+    let result = {};
     let course = await courses.getCourseById(data.id);
     if (course.data.length == 0) {
         course = await courses.getCourseByAttr({code: data.code});
         if (course.data.length == 0) {
             try {
-                await courses.create({
+                result = await courses.create({
                     ...data,
                     active_students: data.student_id ? [data.student_id] : []
                 });
@@ -94,13 +98,13 @@ async function generateCourse(data) {
             }
             delete data.student_id;
             try {
-                await courses.update(course.data.id, {
+                result = await courses.update(course.data.id, {
                     ...data,
                     active_students
                 })
             } catch (err) {
                 console.error(err.message);
-                return false;
+                return result;
             }    
         }
     } else {
@@ -110,16 +114,16 @@ async function generateCourse(data) {
         }
         delete data.student_id;
         try {
-            await courses.update(data.id, {
+            result = await courses.update(data.id, {
                 ...data,
                 active_students
             })
         } catch (err) {
             console.error(err.message);
-            return false;
+            return result;
         }
     }
-    return true;
+    return result;
 }
 
 async function update(id, data) {
@@ -161,7 +165,7 @@ async function modify(id, data) {
         const updated_studyplan = await getStudyPlanById(id);
         return {message, data: updated_studyplan.data, status: 200};
     }
-    return {message, data: []};
+    return {message, data: [], status:500};
 } 
 
 async function removeById(id) {
