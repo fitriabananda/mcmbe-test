@@ -26,7 +26,9 @@ router.get('/:id', async function(req, res, next) {
 /* POST course */
 router.post('/', async function(req, res, next) {
   try {
-    res.json(await courses.create(req.body));
+    const result = await courses.create(req.body);
+    res.statusCode = result.status;
+    res.json(result);
   } catch (err) {
     console.error('Error while creating new course', err.message);
     next(err);

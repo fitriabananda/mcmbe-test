@@ -1,6 +1,7 @@
 const helper = require('../utilities/helper');
 const config = require('../utilities/config');
 const course = require('../models/course');
+const { courseValidator } = require('../utilities/validator');
 
 async function getList(page = 1) {
     const offset = helper.getOffset(page, config.listPerPage);
@@ -29,12 +30,19 @@ async function getCourseByAttr(attr) {
 }
 
 async function create(data) {
-    const result = await course.create(data);
     let message = 'Error in creating course.';
-    if (result.id) {
-        message = 'Course created successfully.';
+    let status = 500;
+    let validation = courseValidator(data);
+    if (validation.fails()) {
+        message = validation.errors.all();
+        status = 422;
+    } else {
+        const result = await course.create(data);
+        if (result.id) {
+            message = 'Course created successfully.';
+        }
     }
-    return {message, id: result.id};
+    return {message, status, id: result.id};
 }
 
 async function update(id, data) {

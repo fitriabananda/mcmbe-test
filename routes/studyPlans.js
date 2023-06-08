@@ -26,7 +26,9 @@ router.get('/:id', async function(req, res, next) {
 /* POST study plan */
 router.post('/', async function(req, res, next) {
   try {
-    res.json(await studyPlans.create(req.body));
+    const result = await studyPlans.create(req.body);
+    res.statusCode = result.status;
+    res.json(result);
   } catch (err) {
     console.error('Error while creating new study plan', err.message);
     next(err);
@@ -36,7 +38,9 @@ router.post('/', async function(req, res, next) {
 /* PUT study plan */
 router.put('/:id', async function(req, res, next) {
   try {
-    res.json(await studyPlans.update(req.params.id, req.body));
+    const result = await studyPlans.update(req.params.id, req.body);
+    res.statusCode = result.status;
+    res.json(result);
   } catch (err) {
     console.error('Error while updating study plan', err.message);
     next(err);

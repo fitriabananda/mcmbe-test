@@ -2,6 +2,7 @@ const helper = require('../utilities/helper');
 const config = require('../utilities/config');
 const courses = require('./courses');
 const studyPlan = require('../models/studyPlan');
+const { studyPlanValidator, studyPlanCoursesValidator } = require('../utilities/validator');
 
 async function getList(page = 1) {
     const offset = helper.getOffset(page, config.listPerPage);
@@ -22,19 +23,27 @@ async function getStudyPlanById(id) {
 }
 
 async function create(data) {
-    const default_data = {
-        student_id: data.student_id,
-        year: data.year,
-        period: data.period,
-        is_active: data.is_active 
-    }
-    const result = await studyPlan.create(default_data);
     let message = 'Error in creating study plan.';
-    if (result.id) {
-        message = 'Study plan created successfully.';
-        await modifyCourses(result.id, data);
+    let status = 500;
+    let validation = studyPlanValidator(data);
+    if (validation.fails()) {
+        message = validation.errors.all();
+        status = 422;
+    } else {
+        const default_data = {
+            student_id: data.student_id,
+            year: data.year,
+            period: data.period,
+            is_active: data.is_active 
+        }
+        const result = await studyPlan.create(default_data);
+        if (result.id) {
+            message = 'Study plan created successfully.';
+            status = 200;
+            await modifyCourses(result.id, data);
+        }
     }
-    return {message};
+    return {message, status};
 }
 
 async function modifyCourses(id, data) {
@@ -114,22 +123,28 @@ async function generateCourse(data) {
 }
 
 async function update(id, data) {
-    let modify_data = {};
-    let result = {};
-    if (data.courses) {
-        modify_data.courses = data.courses;
-        delete data.courses;
-    }
-    try {
-        result = await modify(id, data);
-        modify_data.is_active = result.data.is_active;
-        modify_data.student_id = result.data.student_id;
-        modify_data.period = result.data.period;
-    } catch (err) {
-        console.error(err.message);
-    }
-    if (Object.keys(modify_data).length > 0) {
-        result = await modifyCourses(id, modify_data);
+    let validation = studyPlanCoursesValidator(data);
+    let result = {status:500};
+    if (validation.fails()) {
+        result.message = validation.errors.all();
+        result.status = 422;
+    } else {
+        let modify_data = {};
+        if (data.courses) {
+            modify_data.courses = data.courses;
+            delete data.courses;
+        }
+        try {
+            result = await modify(id, data);
+            modify_data.is_active = result.data.is_active;
+            modify_data.student_id = result.data.student_id;
+            modify_data.period = result.data.period;
+        } catch (err) {
+            console.error(err.message);
+        }
+        if (Object.keys(modify_data).length > 0) {
+            result = await modifyCourses(id, modify_data);
+        }
     }
     return result;
 }
@@ -141,13 +156,12 @@ async function modify(id, data) {
         }
     });
     let message = 'Error in updating study plan.';
-    let res = {};
     if (result && result.length > 0) {
         message = 'Study plan updated successfully.';
         const updated_studyplan = await getStudyPlanById(id);
-        return {message, data: updated_studyplan.data};
+        return {message, data: updated_studyplan.data, status: 200};
     }
-    return {message};
+    return {message, data: []};
 } 
 
 async function removeById(id) {
