@@ -1,10 +1,10 @@
 const { DataTypes } = require('@sequelize/core');
 const { sequelize } = require('../services/db');
-const { currentYear, currentMonth } = require('../utilities/helper');
+const { currentYear, currentMonth } = require('../helper');
 // const student = require('./student');
 // const course = require('./course');
 
-const studyPlan = sequelize.define('StudyPlan', {
+const studyPlan = sequelize.define('studyplan', {
     student_id: {
         type: DataTypes.INTEGER,
         allowNull: false,

@@ -1,8 +1,9 @@
-const helper = require('../utilities/helper');
-const config = require('../utilities/config');
+const helper = require('../helper');
+const config = require('../config');
 const student = require('../models/student');
 const studyPlans = require('./studyPlans');
 const { studentValidator } = require('../utilities/validator');
+const { sequelize } = require('./db');
 
 async function getList(page = 1) {
     const offset = helper.getOffset(page, config.listPerPage);

@@ -1,7 +1,7 @@
 const { DataTypes } = require('@sequelize/core');
 const { sequelize } = require('../services/db');
 
-const student = sequelize.define('Student', {
+const student = sequelize.define('student', {
     fullname: {
         type: DataTypes.STRING,
         allowNull: false,

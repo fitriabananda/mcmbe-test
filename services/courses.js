@@ -1,5 +1,5 @@
-const helper = require('../utilities/helper');
-const config = require('../utilities/config');
+const helper = require('../helper');
+const config = require('../config');
 const course = require('../models/course');
 const { courseValidator, courseStudentValidator } = require('../utilities/validator');
 
